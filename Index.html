@@ -1,0 +1,727 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><!--kb-start-->
+<title>出張着付けお問い合わせ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&amp;family=Zen+Kaku+Gothic+New:wght@400;500;700&amp;display=swap">
+<style>
+/* Layout: single narrow column. Menus picked with +/- steppers, live estimate, message preview + LINE send at the bottom. Indigo (藍) on cool washi grey. */
+:root {
+  --bg: #f1f3f6;
+  --surface: #ffffff;
+  --fg: #1c2531;
+  --muted: #5b6676;
+  --line: #d5dbe4;
+  --accent: #2b4a7a;
+  --accent-fg: #ffffff;
+  --accent-soft: #e3eaf5;
+  --warn: #8a5a12;
+  --warn-bg: #fbf1dd;
+  --ok: #1f6b4a;
+  --font-display: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171f; --surface: #1b2230; --fg: #e8ecf2; --muted: #9aa5b6; --line: #2e384a;
+    --accent: #8fb0e6; --accent-fg: #0f1722; --accent-soft: #243453;
+    --warn: #e5bd75; --warn-bg: #33291a; --ok: #7fd1a8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171f; --surface: #1b2230; --fg: #e8ecf2; --muted: #9aa5b6; --line: #2e384a;
+  --accent: #8fb0e6; --accent-fg: #0f1722; --accent-soft: #243453;
+  --warn: #e5bd75; --warn-bg: #33291a; --ok: #7fd1a8;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.75;
+  padding-block: 24px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 620px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2 { font-family: var(--font-display); font-weight: 700; text-wrap: balance; margin: 0; line-height: 1.4; }
+h1 { font-size: 1.9rem; letter-spacing: .04em; }
+h2 { font-size: 1.2rem; letter-spacing: .06em; }
+h3 { margin: 6px 0 0; font-size: .82rem; letter-spacing: .12em; color: var(--muted); font-weight: 700; }
+p { margin: 0; }
+.lead { color: var(--muted); font-size: .92rem; line-height: 1.7; }
+header { display: grid; gap: 8px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: .78rem; letter-spacing: .18em; color: var(--accent); font-weight: 700; }
+section { display: grid; gap: 14px; min-width: 0; }
+.menu { display: grid; gap: 8px; }
+.mrow {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; min-width: 0;
+}
+.mrow.on { border-color: var(--accent); background: var(--accent-soft); }
+.mname { font-weight: 700; line-height: 1.5; }
+.mdesc { color: var(--muted); font-size: .8rem; line-height: 1.5; }
+.mprice { font-size: .85rem; font-variant-numeric: tabular-nums; line-height: 1.5; }
+.step { display: flex; align-items: center; gap: 4px; }
+.step output { min-width: 2ch; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.gear { margin-top: 6px; font-size: .85rem; }
+.gear summary { color: var(--accent); font-weight: 700; cursor: pointer; padding: 8px 0; }
+.gear a { color: var(--accent); font-weight: 700; padding: 0 .2em; }
+.gear ul { margin: 2px 0 0; padding-left: 1.3em; line-height: 1.75; }
+.gear .note { color: var(--muted); font-size: .8rem; margin-top: 6px; line-height: 1.6; }
+.step button:disabled { opacity: .35; cursor: not-allowed; }
+.step button {
+  width: 40px; height: 40px; padding: 0; border-radius: 50%; font-size: 1.2rem; line-height: 1;
+  background: var(--surface); color: var(--accent); border: 1px solid var(--accent); font-weight: 700; cursor: pointer;
+}
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > span, legend { font-size: .88rem; font-weight: 700; }
+.req { color: var(--accent); font-size: .75rem; margin-left: 6px; }
+input[type=text], input[type=tel], input[type=date], input[type=time], input[type=number], select, textarea {
+  width: 100%; font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; min-width: 0;
+}
+textarea { resize: vertical; min-height: 84px; }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; min-width: 0; }
+.checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.checks label { display: flex; gap: 8px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: .9rem; cursor: pointer; }
+.checks input { accent-color: var(--accent); width: 18px; height: 18px; margin: 0; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.daytype { font-size: .85rem; color: var(--accent); font-weight: 700; min-height: 1.4em; }
+.estimate { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+.estimate strong { font-family: var(--font-display); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.estimate small { color: var(--muted); display: block; line-height: 1.5; }
+dl.rules { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 14px; margin: 0; font-size: .88rem; line-height: 1.65; }
+dl.rules dt { color: var(--muted); font-weight: 700; white-space: nowrap; }
+dl.rules dd { margin: 0; }
+.actions { display: grid; gap: 10px; }
+button.act, .btn {
+  font: inherit; font-weight: 700; border-radius: 8px; padding: 14px 16px; border: 1px solid var(--accent);
+  cursor: pointer; text-align: center; text-decoration: none; display: block;
+}
+.primary { background: var(--accent); color: var(--accent-fg); }
+.secondary { background: transparent; color: var(--accent); }
+.btn.off { opacity: .55; cursor: not-allowed; }
+.err { color: var(--warn); font-size: .88rem; min-height: 1.4em; }
+.status { color: var(--ok); font-size: .88rem; min-height: 1.4em; }
+.preview { font-size: .88rem; line-height: 1.7; }
+footer { color: var(--muted); font-size: .8rem; }
+.friend { display: grid; gap: 12px; justify-items: center; }
+.friend .btn { width: 100%; }
+#qr { background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid var(--line); width: fit-content; line-height: 0; }
+#qr[hidden] { display: none; }
+.mail { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; margin-top: 4px; }
+.mail[hidden] { display: none; }
+.mailrow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.mailrow strong { word-break: break-all; user-select: all; }
+button.small { padding: 8px 12px; font-size: .85rem; }
+@media (prefers-reduced-motion: no-preference) { button.act, .btn, .mrow { transition: background .15s, border-color .15s; } }
+
+/* ── 持ち主用の編集バーと編集画面 ── */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--surface)}
+.obar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;margin:-24px calc(-1*max(16px,env(safe-area-inset-right,0px))) 16px calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));background:var(--surface);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.obar[hidden]{display:none}
+.obar .tag{font-size:.75rem;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-right:auto}
+.obar .msg{flex-basis:100%;font-size:.82rem;color:var(--warn);line-height:1.5;margin:0}
+.obar .msg:empty{display:none}
+button.mini{font:inherit;font-size:.85rem;font-weight:700;padding:8px 12px;border-radius:8px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer}
+button.mini.solid{background:var(--accent);color:var(--accent-fg)}
+button.mini:disabled,.ebtns button:disabled{opacity:.4;cursor:not-allowed}
+.editor{position:fixed;inset:0;z-index:35;background:var(--bg);overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 12px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 40px) max(16px,env(safe-area-inset-left,0px))}
+.editor[hidden]{display:none}
+.ed-in{max-width:620px;margin:0 auto;display:grid;gap:12px}
+.ed-head{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;z-index:2}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{font:inherit;font-size:.9rem;font-weight:700;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.ecard{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;display:grid;gap:10px;min-width:0}
+.ecard.head{border-color:var(--accent);background:var(--accent-soft)}
+.ecard.hid{opacity:.65}
+.ecard h3{margin:0}
+.ecard input[type=text],.ecard input[type=number],.ecard textarea{font:inherit;width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.chk{display:flex;gap:8px;align-items:center;font-size:.9rem}
+.ebtns{display:flex;flex-wrap:wrap;gap:8px}
+.ebtns button{font:inherit;font-size:.85rem;font-weight:700;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+</style>
+<script type="application/json" id="cfg">{"menus": [{"g": "卒業式", "id": "sotsu", "name": "卒業袴", "desc": "ヘアセット込み（7・8時台は早朝料金サービス）", "wd": 9800, "we": 9800}, {"g": "着付け", "id": "houmon", "name": "訪問着", "desc": "", "wd": 6600, "we": 7700}, {"g": "着付け", "id": "houmonH", "name": "訪問着＋ヘアセット", "desc": "", "wd": 10500, "we": 11500}, {"g": "着付け", "id": "furisode", "name": "振袖", "desc": "", "wd": 8800, "we": 9900}, {"g": "着付け", "id": "furisodeH", "name": "振袖＋ヘアセット", "desc": "", "wd": 13200, "we": 14300}, {"g": "着付け", "id": "tome", "name": "留袖", "desc": "", "wd": 8800, "we": 9900}, {"g": "着付け", "id": "tomeH", "name": "留袖＋ヘアセット", "desc": "", "wd": 13200, "we": 14300}, {"g": "七五三", "id": "s3", "name": "3歳 被布・着物", "desc": "着付けとヘアセット付き（どちらか一方だけのご希望も同額です）", "wd": 6600, "we": 7700}, {"g": "七五三", "id": "s5", "name": "5歳 袴", "desc": "着付けとヘアセット付き（どちらか一方だけのご希望も同額です）", "wd": 6600, "we": 7700}, {"g": "七五三", "id": "s7a", "name": "7歳 作り帯・洋髪", "desc": "着付けとヘアセット付き（どちらか一方だけのご希望も同額です）", "wd": 9800, "we": 10800}, {"g": "七五三", "id": "s7b", "name": "7歳 手結び帯", "desc": "着付けとヘアセット付き（どちらか一方だけのご希望も同額です）", "wd": 12000, "we": 13000}, {"g": "七五三のオプション（単体ではお受けできません）", "id": "make", "name": "お子様のメイク", "desc": "ファンデーション・チークリップのみ", "wd": 2200, "we": 2200, "opt": true, "needs": true}, {"g": "七五三のオプション（単体ではお受けできません）", "id": "nihon", "name": "日本髪", "desc": "日本髪専用飾り一式のレンタルあり（1,500〜2,500円）。ご希望の方は、備考欄へお書きください", "wd": 3300, "we": 3300, "opt": true, "needs": true}, {"g": "ヘアセットのみ", "id": "hair", "name": "ヘアセットのみ", "desc": "同じ予約で、どなたかが着付けの支度を受ける場合に、一緒にご利用いただけます", "wd": 4400, "we": 4400, "needs": true}], "rules": [["お伺い時間", "準備30分と、メニューごとの施術時間で計算します。着付けのみは仕上がりの1時間前、着付けとヘアセットは1時間30分前、3歳は1時間前、5歳は45分前にお伺いします。日本髪とメイクは、1つにつき20分が加わります。"], ["出張費・交通費", "出張費は2,000円です。交通費は、距離に応じて別途かかります。"], ["早朝料金", "お伺いが8時台は1,100円、7時台は2,200円と、1時間早くなるごとに1,100円が加算されます。卒業袴は、7・8時台は早朝料金サービスです。6時台は1,100円、5時台は2,200円です。"], ["キャンセル料", "4日前〜2日前は総額の30%、前日は総額の50%、当日は総額の100%です。"], ["適用の条件", "完全に中止する場合のみ、キャンセル料がかかります。"], ["延期", "雨天や急な体調不良で延期し、後日ご利用いただく場合は、キャンセル料はかかりません。日にちの再設定は、できるだけ1か月以内でお願いします。"], ["雨の日", "あらかじめ天気予報などを確認して、中止の可能性をご連絡ください。雨なら洋服で行き、着付け自体を取りやめる場合は完全キャンセルとなり、4日前の連絡とそれ以降は規定のキャンセル料がかかります。"], ["ご相談", "振り加減や時間は、できるだけ対応します。"]], "gear": {"houmon": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "コーリンベルト", "帯板", "草履", "バッグ", "伊達締め 2本", "肌襦袢", "裾よけ", "足袋", "衿芯", "腰ひも 4〜5本", "フェイスタオル 3枚", "ガーゼ 3m（Cカップ以上の方）"], "furisode": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "伊達締め 2本", "コーリンベルト", "草履", "バッグ", "足袋", "肌襦袢", "裾よけ", "衿芯", "腰ひも 5〜6本", "3重ひも", "作り帯", "帯板（大1・小1）", "フェイスタオル 5枚", "ガーゼ 3m（Cカップ以上の方）"], "tome": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "コーリンベルト", "帯板", "草履", "バッグ", "伊達締め 2本", "肌襦袢", "裾よけ", "衿芯", "腰ひも 4〜5本", "フェイスタオル 3枚", "ガーゼ 3m（Cカップ以上の方）", "3重ひも（変わり太鼓の方のみ）", "末広（新郎新婦の母のみ）"], "sotsu": ["着物", "袴", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "半幅帯", "帯板", "腰ひも 4本", "伊達締め 2本", "フェイスタオル 3枚", "重ね衿（付ける方）", "コーリンベルト 1〜2", "肌襦袢（ヒートテックでも可）", "レギンス（防寒）", "草履 → 足袋　／　ブーツ → 靴下"], "s35": ["着物セット", "足袋", "肌着", "レギンス（防寒）", "フェイスタオル 2枚"], "s7a": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "伊達締め 2本", "コーリンベルト", "草履", "バッグ", "足袋", "肌襦袢", "裾よけ", "腰ひも 4〜5本", "しごき", "箱せこセット", "帯板 1", "フェイスタオル 3枚"], "s7b": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "伊達締め 2本", "コーリンベルト", "草履", "バッグ", "足袋", "肌襦袢", "裾よけ", "腰ひも 4〜5本", "しごき", "箱せこセット", "帯板 1", "フェイスタオル 3枚", "三重仮紐（手結び帯を使用する場合のみ）"]}, "gearMap": {"houmon": "houmon", "houmonH": "houmon", "furisode": "furisode", "furisodeH": "furisode", "tome": "tome", "tomeH": "tome", "sotsu": "sotsu", "s3": "s35", "s5": "s35", "s7a": "s7a", "s7b": "s7b"}, "videos": ["https://youtu.be/RNJ0_PYezuo", "https://youtube.com/shorts/ex2XXoiwvq4?si=xu1yg7Qv_dFXZBeZ"], "fees": {"trip": 2000, "early": 1100}, "prev": {"menus": [{"g": "着付け", "id": "houmon", "name": "訪問着", "desc": "", "wd": 6600, "we": 7700}, {"g": "着付け", "id": "houmonH", "name": "訪問着＋ヘアセット", "desc": "", "wd": 10500, "we": 11500}, {"g": "着付け", "id": "furisode", "name": "振袖", "desc": "", "wd": 8800, "we": 9900}, {"g": "着付け", "id": "furisodeH", "name": "振袖＋ヘアセット", "desc": "", "wd": 13200, "we": 14300}, {"g": "着付け", "id": "tome", "name": "留袖", "desc": "", "wd": 8800, "we": 9900}, {"g": "着付け", "id": "tomeH", "name": "留袖＋ヘアセット", "desc": "", "wd": 13200, "we": 14300}, {"g": "卒業式", "id": "sotsu", "name": "卒業袴", "desc": "ヘアセット込み（7・8時台は早朝料金サービス）", "wd": 9800, "we": 9800}, {"g": "七五三", "id": "s3", "name": "3歳 被布・着物", "desc": "着付けとヘアセット付き（どちらか一方だけのご希望も同額です）", "wd": 6600, "we": 7700}, {"g": "七五三", "id": "s5", "name": "5歳 袴", "desc": "着付けとヘアセット付き（どちらか一方だけのご希望も同額です）", "wd": 6600, "we": 7700}, {"g": "七五三", "id": "s7a", "name": "7歳 作り帯・洋髪", "desc": "着付けとヘアセット付き（どちらか一方だけのご希望も同額です）", "wd": 9800, "we": 10800}, {"g": "七五三", "id": "s7b", "name": "7歳 手結び帯", "desc": "着付けとヘアセット付き（どちらか一方だけのご希望も同額です）", "wd": 12000, "we": 13000}, {"g": "七五三のオプション（単体ではお受けできません）", "id": "make", "name": "お子様のメイク", "desc": "ファンデーション・チークリップのみ", "wd": 2200, "we": 2200, "opt": true, "needs": true}, {"g": "七五三のオプション（単体ではお受けできません）", "id": "nihon", "name": "日本髪", "desc": "日本髪専用一式のレンタルあり（1,500〜2,500円）。ご希望の方は、備考欄へお書きください", "wd": 3300, "we": 3300, "opt": true, "needs": true}, {"g": "ヘアセットのみ", "id": "hair", "name": "ヘアセットのみ", "desc": "同じ予約で、どなたかが着付けの支度を受ける場合に、一緒にご利用いただけます", "wd": 4400, "we": 4400, "needs": true}], "rules": [["お伺い時間", "準備30分と、メニューごとの施術時間で計算します。着付けのみは仕上がりの1時間前、着付けとヘアセットは1時間30分前、3歳は1時間前、5歳は45分前にお伺いします。日本髪とメイクは、1つにつき20分が加わります。"], ["出張費・交通費", "出張費は2,000円です。交通費は、距離に応じて別途かかります。"], ["早朝料金", "お伺いが8時台は1,100円、7時台は2,200円と、1時間早くなるごとに1,100円が加算されます。卒業袴は、7・8時台は早朝料金サービスです。6時台は1,100円、5時台は2,200円です。"], ["キャンセル料", "4日前〜2日前は総額の30%、前日は総額の50%、当日は総額の100%です。"], ["適用の条件", "完全に中止する場合のみ、キャンセル料がかかります。"], ["延期", "雨天や急な体調不良で延期し、後日ご利用いただく場合は、キャンセル料はかかりません。日にちの再設定は、できるだけ1か月以内でお願いします。"], ["雨の日", "あらかじめ天気予報などを確認して、中止の可能性をご連絡ください。雨なら洋服で行き、着付け自体を取りやめる場合は完全キャンセルとなり、4日前の連絡とそれ以降は規定のキャンセル料がかかります。"], ["ご相談", "振り加減や時間は、できるだけ対応します。"]], "gear": {"houmon": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "コーリンベルト", "帯板", "草履", "バッグ", "伊達締め 2本", "肌襦袢", "裾よけ", "足袋", "衿芯", "腰ひも 4〜5本", "フェイスタオル 3枚", "ガーゼ 3m（Cカップ以上の方）", "3重ひも（変わり太鼓の方のみ）"], "furisode": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "伊達締め 2本", "コーリンベルト", "草履", "バッグ", "足袋", "肌襦袢", "裾よけ", "衿芯", "腰ひも 5〜6本", "3重ひも", "作り帯", "帯板（大1・小1）", "フェイスタオル 5枚", "ガーゼ 3m（Cカップ以上の方）"], "tome": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "コーリンベルト", "帯板", "草履", "バッグ", "伊達締め 2本", "肌襦袢", "裾よけ", "衿芯", "腰ひも 4〜5本", "フェイスタオル 3枚", "ガーゼ 3m（Cカップ以上の方）", "3重ひも（変わり太鼓の方のみ）", "末広（新郎新婦の母のみ）"], "sotsu": ["着物", "袴", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "半幅帯", "帯板", "腰ひも 4本", "伊達締め 2本", "フェイスタオル 3枚", "重ね衿（付ける方）", "コーリンベルト 1〜2", "肌襦袢（ヒートテックでも可）", "レギンス（防寒）", "草履 → 足袋　／　ブーツ → 靴下"], "s35": ["着物セット", "足袋", "肌着", "レギンス（防寒）", "フェイスタオル 2枚"], "s7a": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "伊達締め 2本", "コーリンベルト", "草履", "バッグ", "足袋", "肌襦袢", "裾よけ", "腰ひも 4〜5本", "しごき", "箱せこセット", "帯板 1", "フェイスタオル 3枚"], "s7b": ["着物", "帯", "長襦袢（半衿が付いた状態）　衿の確認動画 [[動画]]", "帯締め", "帯枕", "帯あげ", "伊達締め 2本", "コーリンベルト", "草履", "バッグ", "足袋", "肌襦袢", "裾よけ", "腰ひも 4〜5本", "しごき", "箱せこセット", "帯板 1", "フェイスタオル 3枚", "三重仮紐（手結び帯を使用する場合のみ）"]}, "gearMap": {"houmon": "houmon", "houmonH": "houmon", "furisode": "furisode", "furisodeH": "furisode", "tome": "tome", "tomeH": "tome", "sotsu": "sotsu", "s3": "s35", "s5": "s35", "s7a": "s7a", "s7b": "s7b"}, "videos": ["https://youtu.be/RNJ0_PYezuo", "https://youtube.com/shorts/ex2XXoiwvq4?si=xu1yg7Qv_dFXZBeZ"], "fees": {"trip": 2000, "early": 1100}}}</script>
+<div class="obar" id="obar" hidden="">
+  <span class="tag">持ち主用</span>
+  <button type="button" class="mini solid" id="bEdit">内容を編集</button>
+  <button type="button" class="mini solid" id="bPub" hidden="">公開する</button>
+  <button type="button" class="mini" id="bDiscard" hidden="">変更を破棄</button>
+  <button type="button" class="mini solid" id="bYes" hidden="">公開する</button>
+  <button type="button" class="mini" id="bNo" hidden="">やめる</button>
+  <p class="msg" id="bMsg" role="status"></p>
+</div>
+<div class="editor" id="ed" hidden=""></div>
+<main>
+  <header>
+    <p class="eyebrow">出張着付け</p>
+    <h1>お問い合わせフォーム</h1>
+    <p class="lead">ご希望の内容を入力して、LINEでお送りください。空き状況を確認して、こちらからご返信します。この時点では、ご予約は確定していません。</p>
+  </header>
+
+  <section id="friend">
+    <h2>先にLINEの友だち追加をお願いします</h2>
+    <p class="lead">このフォームの内容は、LINEでお送りいただきます。まだの方は、下のQRコードかボタンで友だち追加をしてください。</p>
+    <div class="friend">
+      <div id="qr" aria-label="LINE友だち追加のQRコード"></div>
+      <a class="btn secondary" href="https://line.me/ti/p/SYeWz7YhCe" target="_blank" rel="noopener">LINEで友だち追加する</a>
+    </div>
+    <div class="mail" id="mailTop" hidden="">
+      <h3>メールでお問い合わせの方</h3>
+      <p class="lead">LINEを使わない方は、メールでもお問い合わせいただけます。下のフォームに入力すると、最後の「メールで送る」から、内容を入れたメールを作れます。</p>
+      <div class="mailrow"><strong id="mailTopAddr"></strong><button type="button" class="act secondary small" id="copyTop">アドレスをコピー</button></div>
+      <button type="button" class="act secondary" id="toMail">メールで送る場所まで進む</button>
+    </div>
+  </section>
+
+  <form id="f" novalidate="" autocomplete="off" style="display:grid;gap:28px">
+    <section>
+      <h2>メニュー</h2>
+      <p class="lead">ご利用の人数分、＋で数を選んでください。土日祝は料金が変わります。</p>
+      <h3>成人式当日</h3>
+      <div class="checks" style="grid-template-columns:1fr">
+        <label><input type="checkbox" id="seijin"> 成人式当日（ヘア・着付け）を希望する</label>
+      </div>
+      <p class="lead">成人式当日の料金は、お問い合わせのあとにご案内します。料金の目安には含まれません。</p>
+      <div class="menu" id="menu"></div>
+    </section>
+
+    <section>
+      <h2>日時と場所</h2>
+      <div class="row">
+        <label class="field"><span>第1希望日<span class="req">必須</span></span><input type="date" id="d1"></label>
+        <label class="field"><span>仕上がり希望時間</span><input type="time" id="t1" value="09:00"></label>
+      </div>
+      <p class="daytype" id="dayType"></p>
+      <p class="daytype" id="arrive"></p>
+      <label class="field"><span>出張先の住所<span class="req">必須</span></span><input type="text" id="addr" placeholder="例：茅ヶ崎市〇〇1-2-3"></label>
+      <div class="row">
+        <label class="field"><span>建物の種類</span>
+          <select id="bld"><option value="">選んでください</option><option>戸建</option><option>マンション・アパート</option><option>その他</option></select>
+        </label>
+      </div>
+      <div class="row">
+        <label class="field"><span>場所の種類</span>
+          <select id="place"><option>ご自宅</option><option>ご実家</option><option>ホテル</option><option>式場・美容室</option><option>その他</option></select>
+        </label>
+        <label class="field"><span>駐車場</span>
+          <select id="park"><option value="">選んでください</option><option>あり</option><option>なし</option><option>わからない</option></select>
+        </label>
+      </div>
+      <label class="field"><span>マンション名・目印・建物の特徴</span><input type="text" id="mark" placeholder="例：〇〇マンション 302、白い外壁、1階にコンビニ"></label>
+      <h3>表札</h3>
+      <p class="lead">表札がある場合は「あり」を選んでください。ご実家などで、お申込みの方のお名前と表札が違う場合だけ、表札の名前を入れてください。</p>
+      <div class="row">
+        <label class="field"><span>表札の有無</span>
+          <select id="plate"><option value="">選んでください</option><option>あり</option><option>なし</option></select>
+        </label>
+        <label class="field" id="plateNameWrap"><span>表札の名前（お名前と違う場合のみ）</span><input type="text" id="plateName" placeholder="同じ場合は空のままで大丈夫です"></label>
+      </div>
+    </section>
+
+    <section>
+      <h2>ご希望</h2>
+      <label class="field"><span>ご利用の用途</span><input type="text" id="use" placeholder="例：結婚式、七五三、卒業式"></label>
+      <fieldset>
+        <legend>着る着物の種類</legend>
+        <div class="checks" id="kinds"></div>
+      </fieldset>
+      <div class="row">
+        <label class="field"><span>雨天時の着付け</span>
+          <select id="rain"><option value="">選んでください</option><option>行う</option><option>行わない</option><option>延期</option></select>
+        </label>
+        <label class="field"><span>SNSへの写真掲載</span>
+          <select id="sns"><option value="">選んでください</option><option>NG</option><option>OK</option><option>顔ぼかしならOK</option></select>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <h2>お客様情報</h2>
+      <label class="field"><span>お申込みの方のお名前<span class="req">必須</span></span><input type="text" id="name" placeholder="例：山田 花子"></label>
+      <label class="field"><span>お子様のお名前・年齢</span><input type="text" id="kid" placeholder="例：山田 太郎くん（5歳）"></label>
+      <label class="field"><span>連絡先（お電話）</span><input type="tel" id="tel" inputmode="tel" placeholder="例：090-0000-0000"></label>
+      <label class="field"><span>備考欄（ご要望・ご質問）</span><textarea id="memo" placeholder="例：日本髪用髪飾り一式のレンタルを希望します"></textarea></label>
+    </section>
+
+    <section>
+      <h2>料金の目安</h2>
+      <div class="estimate" aria-live="polite">
+        <div>合計の目安<small id="estNote"></small></div>
+        <strong id="est">¥0</strong>
+      </div>
+      <p class="lead" id="tripLead"></p>
+    </section>
+
+    <section>
+      <h2>ご案内</h2>
+      <dl class="rules" id="rules"></dl>
+    </section>
+
+    <section>
+      <h2>送信内容の確認</h2>
+      <textarea id="out" class="preview" readonly="" rows="14" aria-label="送信されるメッセージ"></textarea>
+      <p class="err" id="err" role="alert"></p>
+      <div class="actions">
+        <a class="btn primary" id="line" href="#" target="_blank" rel="noopener">LINEで送る</a>
+        <button type="button" class="act secondary" id="copy">内容をコピーする</button>
+        <p class="status" id="status" role="status"></p>
+      </div>
+      <p class="lead">「LINEで送る」を押すとLINEが開きます。送り先に、こちらのアカウントを選んでください。開かない場合は「内容をコピーする」からLINEに貼り付けてください。</p>
+      <div class="mail" id="mailBox" hidden="">
+        <h3>メールで送る場合</h3>
+        <p class="lead">LINEを使わない方は、メールでお送りください。</p>
+        <div class="mailrow"><strong id="mailAddr"></strong><button type="button" class="act secondary small" id="copyAddr">アドレスをコピー</button></div>
+        <a class="btn secondary" id="mailLink" href="#">メールアプリで開く</a>
+        <p class="lead">メールアプリが開かない場合は、上のアドレスと、「内容をコピーする」でコピーした内容を、メールに貼り付けて送ってください。件名は「出張着付けのお問い合わせ」としてください。</p>
+      </div>
+    </section>
+  </form>
+
+  <footer>お預かりした個人情報は、お問い合わせへのご返信のみに使います。</footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* 先頭で、元のページ内容を控えます（編集して保存するときに、ページを作り直すために使います） */
+const KB_START = "<" + "!--kb-start--" + ">";
+const KB_END = "/*kb-main" + "-end*/";
+const SCRIPT_CLOSE = "</scr" + "ipt>";
+const BODY_AT_LOAD = document.body.innerHTML;
+const RESET_CSS = ":root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}";
+const SKELETON = '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>' + RESET_CSS + "</style></head><body>";
+
+const $ = (id) => document.getElementById(id);
+const clone = (o) => JSON.parse(JSON.stringify(o));
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const yen = (v) => "¥" + v.toLocaleString("ja-JP");
+
+/* ── 内容（メニュー・料金・ご案内・準備品）は、ページ先頭のデータにあります。持ち主は、画面の「内容を編集」で直せます ── */
+const PUB = JSON.parse($("cfg").textContent);
+let CFG = clone(PUB);
+const stable = (c) => { const x = clone(c); delete x.prev; return JSON.stringify(x); };
+const menus = () => CFG.menus.filter((m) => !m.hidden);
+const menuById = (id) => CFG.menus.find((m) => m.id === id);
+
+/* ── 計算に使う決まり（ここは、Claudeに頼んで直します） ── */
+const LINE_URL = "https://line.me/ti/p/SYeWz7YhCe"; // LINE友だち追加のURL
+const MAIL_TO = "y.yoyaku8@gmail.com"; // お問い合わせ用のメールアドレス。空のあいだは、メールの案内を表示しません
+const PREP = 30; // 準備30分
+const WORK = {"houmon": 30, "houmonH": 60, "furisode": 30, "furisodeH": 60, "tome": 30, "tomeH": 60, "sotsu": 60, "s3": 30, "s5": 15, "s7a": 60, "s7b": 60, "hair": 30}; // 施術時間（分）
+const EXTRA = {"make": 20, "nihon": 20}; // オプション1つにつき加わる時間（分）
+const KINDS = ["小紋", "訪問着", "留袖", "振袖", "被布", "白無垢", "その他"];
+const HOLIDAYS = new Set(["2026-01-01", "2026-01-12", "2026-02-11", "2026-02-23", "2026-03-20", "2026-04-29", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-07-20", "2026-08-11", "2026-09-21", "2026-09-22", "2026-09-23", "2026-10-12", "2026-11-03", "2026-11-23", "2027-01-01", "2027-01-11", "2027-02-11", "2027-02-23", "2027-03-21", "2027-03-22", "2027-04-29", "2027-05-03", "2027-05-04", "2027-05-05", "2027-07-19", "2027-08-11", "2027-09-20", "2027-09-23", "2027-10-11", "2027-11-03", "2027-11-23"]);
+
+const WD = ["日", "月", "火", "水", "木", "金", "土"];
+const fmtDate = (s) => { if (!s) return ""; const [y, m, d] = s.split("-").map(Number); return `${y}年${m}月${d}日(${WD[new Date(y, m - 1, d).getDay()]})`; };
+const fmtMin = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
+const dayKind = (s) => {
+  if (!s) return null;
+  const [y, m, d] = s.split("-").map(Number);
+  const w = new Date(y, m - 1, d).getDay();
+  return (w === 0 || w === 6 || HOLIDAYS.has(s)) ? "we" : "wd";
+};
+const qty = {};
+
+/* ── 画面の組み立て ── */
+const VIDEO_MARK = "[[動画]]";
+function videoLinks() {
+  const ok = (CFG.videos || []).map((u) => String(u || "").trim()).filter((u) => /^https:\/\//.test(u));
+  return ok.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">${"①②③④"[i] || i + 1}</a>`).join("・");
+}
+function gearHtml(m) {
+  const list = CFG.gear[CFG.gearMap[m.id]];
+  if (!list || !list.length) return "";
+  const li = list.map((t) => `<li>${esc(t).split(VIDEO_MARK).join(videoLinks())}</li>`).join("");
+  return `<details class="gear"><summary>ご準備いただく物</summary><ul>${li}</ul><p class="note">ご不明な点は、LINEでご相談ください。</p></details>`;
+}
+function renderMenu() {
+  let html = "", last = null;
+  menus().forEach((m) => {
+    if (m.g !== last) { html += `<h3>${esc(m.g)}</h3>`; last = m.g; }
+    const price = (m.wd == null || m.we == null)
+      ? "料金は確認してご連絡します"
+      : (m.opt ? "＋" : "") + (m.wd === m.we ? yen(m.wd) : `平日 ${yen(m.wd)} ／ 土日祝 ${yen(m.we)}`);
+    html += `<div class="mrow" id="r-${esc(m.id)}">
+      <div><div class="mname">${esc(m.name)}</div>${m.desc ? `<div class="mdesc">${esc(m.desc)}</div>` : ""}<div class="mprice">${price}</div>${gearHtml(m)}</div>
+      <div class="step">
+        <button type="button" data-id="${esc(m.id)}" data-d="-1" aria-label="${esc(m.name)}を減らす">−</button>
+        <output id="q-${esc(m.id)}">0</output>
+        <button type="button" data-id="${esc(m.id)}" data-d="1" aria-label="${esc(m.name)}を増やす">＋</button>
+      </div></div>`;
+  });
+  $("menu").innerHTML = html;
+}
+function renderRules() {
+  $("rules").innerHTML = CFG.rules.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v).replace(/\n/g, "<br>")}</dd>`).join("");
+}
+function applyDraft() { renderMenu(); renderRules(); render(); }
+
+$("kinds").innerHTML = KINDS.map((t) => `<label><input type="checkbox" value="${t}"> ${t}</label>`).join("");
+const today = new Date(); const pad = (n) => String(n).padStart(2, "0");
+const minDate = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+$("d1").min = minDate;
+
+$("menu").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-id]");
+  if (!b || b.disabled) return;
+  const id = b.dataset.id;
+  qty[id] = Math.max(0, Math.min(10, (qty[id] || 0) + Number(b.dataset.d)));
+  render();
+});
+
+const hasBase = () => menus().some((m) => !m.needs && (qty[m.id] || 0) > 0) || $("seijin").checked;
+
+function calc() {
+  const k = dayKind($("d1").value) || "wd";
+  const lines = [], opts = [];
+  let sum = 0, work = 0, extra = 0, unk = false, sotsu = false, pend = false;
+  menus().forEach((m) => {
+    const q = qty[m.id] || 0;
+    if (!q) return;
+    if (m[k] == null) pend = true; else sum += m[k] * q;
+    if (WORK[m.id]) work += WORK[m.id] * q; else if (EXTRA[m.id]) extra += EXTRA[m.id] * q; else unk = true;
+    if (m.id === "sotsu") sotsu = true;
+    (m.opt ? opts : lines).push(`${m.name} × ${q}`);
+  });
+  const kinds = [...document.querySelectorAll("#kinds input:checked")].map((e) => e.value);
+  const inq = $("seijin").checked;
+  const trip = lines.length ? CFG.fees.trip : 0;
+  const picked = lines.length + opts.length > 0 || inq;
+  const tm = /^(\d{1,2}):(\d{2})$/.exec($("t1").value || "");
+  let arr = null, earlyFee = 0;
+  if (picked && !unk && !inq && tm && work > 0) {
+    const a = Number(tm[1]) * 60 + Number(tm[2]) - (PREP + work + extra);
+    if (a >= 0) {
+      arr = a;
+      earlyFee = CFG.fees.early * Math.max(0, (sotsu ? 7 : 9) - Math.floor(a / 60));
+    }
+  }
+  return { k, lines, opts, inq, picked, pend, extra, work, unk: unk || inq, arr, earlyFee, trip, sum, total: sum + trip + earlyFee, kinds };
+}
+
+function build(c) {
+  const L = ["【出張着付けのお問い合わせ】"];
+  L.push(`お名前：${$("name").value.trim() || "（未入力）"}`);
+  if ($("kid").value.trim()) L.push(`お子様：${$("kid").value.trim()}`);
+  if ($("tel").value.trim()) L.push(`連絡先：${$("tel").value.trim()}`);
+  L.push("メニュー：");
+  c.lines.forEach((t) => L.push("・" + t));
+  if (c.inq) L.push("・成人式当日（料金はお問い合わせ）");
+  if (!c.lines.length && !c.inq) L.push("・（未選択）");
+  if (c.opts.length) L.push("オプション：" + c.opts.join("、"));
+  L.push(`第1希望日：${fmtDate($("d1").value) || "（未入力）"}${$("d1").value ? (c.k === "we" ? "（土日祝料金）" : "（平日料金）") : ""}`);
+  L.push(`仕上がり希望時間：${$("t1").value || "未定"}`);
+  if (c.arr != null) L.push(`お伺い時間の目安：${fmtMin(c.arr)}${c.earlyFee ? `（早朝料金 ${yen(c.earlyFee)}）` : ""}`);
+  L.push(`出張先：${$("addr").value.trim() || "（未入力）"}`);
+  if ($("bld").value) L.push(`建物：${$("bld").value}`);
+  if ($("plate").value) L.push(`表札：${$("plate").value}${$("plateName").value.trim() ? "（" + $("plateName").value.trim() + "）" : ""}`);
+  L.push(`場所：${$("place").value}`);
+  if ($("park").value) L.push(`駐車場：${$("park").value}`);
+  if ($("mark").value.trim()) L.push(`マンション名・目印：${$("mark").value.trim()}`);
+  if ($("use").value.trim()) L.push(`用途：${$("use").value.trim()}`);
+  if (c.kinds.length) L.push(`着物の種類：${c.kinds.join("、")}`);
+  if ($("rain").value) L.push(`雨天時の着付け：${$("rain").value}`);
+  if ($("sns").value) L.push(`SNS掲載：${$("sns").value}`);
+  L.push(`料金の目安：${yen(c.total)}${c.trip ? `（出張費${yen(c.trip)}を含む・交通費は別途）` : ""}${c.pend ? "（一部のメニューは料金を確認してご連絡）" : ""}`);
+  if ($("memo").value.trim()) L.push(`ご要望：${$("memo").value.trim()}`);
+  return L.join("\n");
+}
+
+function missing(c) {
+  const m = [];
+  if (!c.lines.length && !c.inq) m.push("メニュー");
+  if (!$("name").value.trim()) m.push("お名前");
+  if (!$("d1").value) m.push("第1希望日");
+  if (!$("addr").value.trim()) m.push("出張先の住所");
+  return m;
+}
+
+function render() {
+  const base = hasBase();
+  menus().forEach((m) => {
+    if (m.needs) {
+      if (!base) qty[m.id] = 0;
+      document.querySelectorAll(`button[data-id="${m.id}"]`).forEach((x) => { x.disabled = !base; });
+    }
+    const q = qty[m.id] || 0;
+    const out = $("q-" + m.id), row = $("r-" + m.id);
+    if (out) out.textContent = q;
+    if (row) row.classList.toggle("on", q > 0);
+  });
+  const c = calc();
+  const kd = dayKind($("d1").value);
+  $("dayType").textContent = kd ? (kd === "we" ? "土日祝の料金で計算しています" : "平日の料金で計算しています") : "第1希望日を選ぶと、土日祝か平日かを自動で判定します";
+  let at = "";
+  if (c.arr != null) at = `お伺い時間の目安：${fmtMin(c.arr)}（準備${PREP}分＋施術${c.work}分${c.extra ? `＋オプション${c.extra}分` : ""}）` + (c.earlyFee ? `　早朝料金 ${yen(c.earlyFee)}` : "");
+  else if (c.picked && c.unk) at = "お伺い時間は、内容を確認してご連絡します";
+  $("arrive").textContent = at;
+  $("est").textContent = yen(c.total);
+  $("estNote").textContent = (c.inq ? "成人式当日は含みません / " : "") + (c.pend ? "料金未定のメニューは含みません / " : "") + (c.k === "we" ? "土日祝料金" : "平日料金") + (c.trip ? ` / 出張費 ${yen(c.trip)}` : "") + (c.earlyFee ? ` / 早朝料金 ${yen(c.earlyFee)}` : "") + (c.trip ? " / 交通費は別途" : "");
+  $("tripLead").textContent = `目安です。出張費${yen(CFG.fees.trip)}を含みます。交通費は、距離に応じて別途かかり、あらためてご連絡します。`;
+  const text = build(c);
+  $("out").value = text;
+  $("line").href = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+  if (MAIL_TO) {
+    $("mailBox").hidden = false;
+    $("mailAddr").textContent = MAIL_TO;
+    $("mailTop").hidden = false;
+    $("mailTopAddr").textContent = MAIL_TO;
+    $("mailLink").href = "mailto:" + MAIL_TO + "?subject=" + encodeURIComponent("出張着付けのお問い合わせ") + "&body=" + encodeURIComponent(text);
+  }
+  const m = missing(c);
+  ["line", "mailLink"].forEach((id) => {
+    const a = $(id);
+    if (m.length) a.removeAttribute("href");
+    a.classList.toggle("off", m.length > 0);
+    a.setAttribute("aria-disabled", String(m.length > 0));
+  });
+  $("err").textContent = m.length ? `未入力：${m.join("、")}` : "";
+}
+
+$("f").addEventListener("input", render);
+$("f").addEventListener("change", render);
+$("f").addEventListener("submit", (e) => e.preventDefault());
+
+$("line").addEventListener("click", (e) => {
+  render();
+  const m = missing(calc());
+  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; }
+});
+
+$("copy").addEventListener("click", async () => {
+  render();
+  const m = missing(calc());
+  if (m.length) { $("err").textContent = `未入力：${m.join("、")}。入力してからコピーしてください。`; return; }
+  try {
+    await navigator.clipboard.writeText($("out").value);
+    $("status").textContent = "コピーしました。LINEに貼り付けて送ってください。";
+  } catch (_) {
+    $("out").focus(); $("out").select();
+    $("status").textContent = "選択しました。長押しでコピーしてください。";
+  }
+});
+
+$("mailLink").addEventListener("click", (e) => {
+  render();
+  const m = missing(calc());
+  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; }
+});
+
+$("toMail").addEventListener("click", () => { $("mailBox").scrollIntoView({ behavior: "smooth", block: "start" }); });
+$("copyTop").addEventListener("click", () => $("copyAddr").click());
+$("copyAddr").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(MAIL_TO);
+    $("status").textContent = "アドレスをコピーしました。";
+  } catch (_) {
+    const r = document.createRange(); r.selectNodeContents($("mailAddr"));
+    const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    $("status").textContent = "アドレスを選択しました。長押しでコピーしてください。";
+  }
+});
+
+/* ═══════════ 持ち主だけの「編集モード」 ═══════════ */
+let canEdit = false, confirming = false, edTab = "menu";
+const GEAR_LABELS = { houmon: "訪問着（ヘアセット付きも同じ）", furisode: "振袖（ヘアセット付きも同じ）", tome: "留袖（ヘアセット付きも同じ）", sotsu: "卒業袴", s35: "3歳・5歳", s7a: "7歳 作り帯・洋髪", s7b: "7歳 手結び帯" };
+const isDirty = () => stable(CFG) !== stable(PUB);
+const barMsg = (t) => { $("bMsg").textContent = t || ""; };
+
+function updateBar() {
+  $("obar").hidden = !canEdit;
+  if (!canEdit) return;
+  const d = isDirty();
+  $("bPub").hidden = !d || confirming;
+  $("bDiscard").hidden = !d || confirming;
+  $("bYes").hidden = !confirming;
+  $("bNo").hidden = !confirming;
+  $("bEdit").hidden = confirming;
+  if (confirming) barMsg("お客様に見えるページが変わります。公開しますか？");
+  else barMsg(d ? "未保存の変更があります（お客様には、まだ見えません）" : "");
+}
+
+function groupsOf(list) {
+  const gs = [];
+  list.forEach((m) => { const l = gs[gs.length - 1]; if (l && l.g === m.g) l.items.push(m); else gs.push({ g: m.g, items: [m] }); });
+  return gs;
+}
+const flat = (gs) => gs.flatMap((g) => g.items);
+function moveMenu(id, dir) {
+  const i = CFG.menus.findIndex((m) => m.id === id), j = i + dir;
+  if (j < 0 || j >= CFG.menus.length || CFG.menus[j].g !== CFG.menus[i].g) return;
+  [CFG.menus[i], CFG.menus[j]] = [CFG.menus[j], CFG.menus[i]];
+}
+function moveGroup(gi, dir) {
+  const gs = groupsOf(CFG.menus), j = gi + dir;
+  if (j < 0 || j >= gs.length) return;
+  [gs[gi], gs[j]] = [gs[j], gs[gi]];
+  CFG.menus = flat(gs);
+}
+function moveRule(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= CFG.rules.length) return;
+  [CFG.rules[i], CFG.rules[j]] = [CFG.rules[j], CFG.rules[i]];
+}
+
+function menuCard(m, first, last) {
+  const pv = (v) => (v == null ? "" : v), id = esc(m.id);
+  return `<div class="ecard${m.hidden ? " hid" : ""}">
+    <label class="field"><span>名前</span><input type="text" data-act="name" data-id="${id}" value="${esc(m.name)}"></label>
+    <label class="field"><span>説明（空でもかまいません）</span><input type="text" data-act="desc" data-id="${id}" value="${esc(m.desc || "")}"></label>
+    <div class="row">
+      <label class="field"><span>平日の料金（円）</span><input type="number" min="0" inputmode="numeric" data-act="wd" data-id="${id}" value="${pv(m.wd)}"></label>
+      <label class="field"><span>土日祝の料金（円）</span><input type="number" min="0" inputmode="numeric" data-act="we" data-id="${id}" value="${pv(m.we)}"></label>
+    </div>
+    <label class="chk"><input type="checkbox" data-act="show" data-id="${id}" ${m.hidden ? "" : "checked"}> ページに表示する</label>
+    <div class="ebtns">
+      <button type="button" data-act="mup" data-id="${id}" ${first ? "disabled" : ""}>↑ 上へ</button>
+      <button type="button" data-act="mdown" data-id="${id}" ${last ? "disabled" : ""}>↓ 下へ</button>
+    </div></div>`;
+}
+
+function renderEditor() {
+  const tabs = [["menu", "メニュー"], ["rules", "ご案内"], ["gear", "準備品"]];
+  let h = `<div class="ed-in"><div class="ed-head"><div class="tabs">${tabs.map(([k, t]) => `<button type="button" data-act="tab" data-t="${k}" aria-pressed="${edTab === k}">${t}</button>`).join("")}</div><button type="button" class="mini solid" data-act="done">完了</button></div>`;
+  if (edTab === "menu") {
+    h += `<p class="lead">料金を空にすると、「料金は確認してご連絡します」と表示されます。見出しごと上下に動かすと、季節に合わせて順番を変えられます。時間の計算に使う施術時間は、ここでは変えられません。</p>`;
+    const gs = groupsOf(CFG.menus);
+    gs.forEach((G, gi) => {
+      h += `<div class="ecard head"><label class="field"><span>見出し</span><input type="text" data-act="gname" data-gi="${gi}" value="${esc(G.g)}"></label>
+        <div class="ebtns"><button type="button" data-act="gup" data-gi="${gi}" ${gi === 0 ? "disabled" : ""}>見出しごと ↑</button><button type="button" data-act="gdown" data-gi="${gi}" ${gi === gs.length - 1 ? "disabled" : ""}>見出しごと ↓</button></div></div>`;
+      G.items.forEach((m, k) => { h += menuCard(m, k === 0, k === G.items.length - 1); });
+    });
+  } else if (edTab === "rules") {
+    h += `<div class="ecard"><h3>料金の設定</h3>
+      <label class="field"><span>出張費（円）</span><input type="number" min="0" inputmode="numeric" data-act="feeTrip" value="${CFG.fees.trip}"></label>
+      <label class="field"><span>早朝料金（1時間ごと・円）</span><input type="number" min="0" inputmode="numeric" data-act="feeEarly" value="${CFG.fees.early}"></label>
+      <p class="lead">金額を変えたときは、下の「ご案内」の文章も、あわせて直してください。</p></div>`;
+    CFG.rules.forEach((r, i) => {
+      h += `<div class="ecard">
+        <label class="field"><span>見出し</span><input type="text" data-act="rk" data-ri="${i}" value="${esc(r[0])}"></label>
+        <label class="field"><span>文章</span><textarea rows="4" data-act="rv" data-ri="${i}">${esc(r[1])}</textarea></label>
+        <div class="ebtns"><button type="button" data-act="rup" data-ri="${i}" ${i === 0 ? "disabled" : ""}>↑ 上へ</button><button type="button" data-act="rdown" data-ri="${i}" ${i === CFG.rules.length - 1 ? "disabled" : ""}>↓ 下へ</button><button type="button" data-act="rdel" data-ri="${i}">削除</button></div></div>`;
+    });
+    h += `<button type="button" class="mini" data-act="radd">＋ 項目を足す</button>`;
+  } else {
+    h += `<p class="lead">メニューをタップすると開く「ご準備いただく物」です。1行に1つずつ書いてください。「${esc(VIDEO_MARK)}」と書いた所に、下の動画のリンクが入ります。</p>`;
+    h += `<div class="ecard"><h3>衿の確認動画</h3>
+      <label class="field"><span>動画①のリンク</span><input type="text" inputmode="url" data-act="video" data-vi="0" value="${esc((CFG.videos || [])[0] || "")}"></label>
+      <label class="field"><span>動画②のリンク</span><input type="text" inputmode="url" data-act="video" data-vi="1" value="${esc((CFG.videos || [])[1] || "")}"></label></div>`;
+    Object.keys(GEAR_LABELS).forEach((key) => {
+      h += `<div class="ecard"><label class="field"><span>${esc(GEAR_LABELS[key])}</span><textarea rows="9" data-act="gear" data-key="${key}">${esc((CFG.gear[key] || []).join("\n"))}</textarea></label></div>`;
+    });
+  }
+  if (PUB.prev) h += `<div class="ecard"><p class="lead">ひとつ前に公開していた内容に戻します。押しても、公開するまで、お客様には見えません。</p><button type="button" class="mini" data-act="revert">ひとつ前の公開内容に戻す</button></div>`;
+  h += `</div>`;
+  $("ed").innerHTML = h;
+}
+
+function openEditor() { $("ed").hidden = false; renderEditor(); $("ed").scrollTop = 0; document.body.style.overflow = "hidden"; }
+function closeEditor() { $("ed").hidden = true; document.body.style.overflow = ""; applyDraft(); updateBar(); }
+
+$("ed").addEventListener("input", (e) => {
+  const t = e.target, a = t.dataset.act;
+  if (!a) return;
+  const num = () => { const v = t.value.trim(); if (v === "") return null; const n = Math.round(Number(v)); return Number.isFinite(n) && n >= 0 ? n : null; };
+  if (a === "name" || a === "desc") menuById(t.dataset.id)[a] = t.value;
+  else if (a === "wd" || a === "we") menuById(t.dataset.id)[a] = num();
+  else if (a === "gname") groupsOf(CFG.menus)[Number(t.dataset.gi)].items.forEach((m) => { m.g = t.value; });
+  else if (a === "feeTrip") CFG.fees.trip = num() == null ? 0 : num();
+  else if (a === "feeEarly") CFG.fees.early = num() == null ? 0 : num();
+  else if (a === "rk") CFG.rules[Number(t.dataset.ri)][0] = t.value;
+  else if (a === "rv") CFG.rules[Number(t.dataset.ri)][1] = t.value;
+  else if (a === "video") { CFG.videos = CFG.videos || []; CFG.videos[Number(t.dataset.vi)] = t.value.trim(); }
+  else if (a === "gear") CFG.gear[t.dataset.key] = t.value.split("\n").map((s) => s.trim()).filter(Boolean);
+});
+$("ed").addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.dataset.act === "show") menuById(t.dataset.id).hidden = !t.checked;
+});
+$("ed").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-act]");
+  if (!b || b.disabled) return;
+  const a = b.dataset.act, ri = Number(b.dataset.ri), gi = Number(b.dataset.gi);
+  if (a === "done") { closeEditor(); return; }
+  if (a === "tab") edTab = b.dataset.t;
+  else if (a === "mup" || a === "mdown") moveMenu(b.dataset.id, a === "mup" ? -1 : 1);
+  else if (a === "gup" || a === "gdown") moveGroup(gi, a === "gup" ? -1 : 1);
+  else if (a === "rup" || a === "rdown") moveRule(ri, a === "rup" ? -1 : 1);
+  else if (a === "rdel") CFG.rules.splice(ri, 1);
+  else if (a === "radd") CFG.rules.push(["", ""]);
+  else if (a === "revert" && PUB.prev) CFG = clone(PUB.prev);
+  else return;
+  renderEditor();
+});
+
+$("bEdit").addEventListener("click", openEditor);
+$("bDiscard").addEventListener("click", () => { CFG = clone(PUB); confirming = false; applyDraft(); updateBar(); });
+$("bPub").addEventListener("click", () => { confirming = true; updateBar(); });
+$("bNo").addEventListener("click", () => { confirming = false; updateBar(); });
+$("bYes").addEventListener("click", () => { publishDraft(); });
+
+/* 公開用のページを作り直す（先頭で控えた元の内容の、データの部分だけを入れ替えます） */
+function buildDoc(c) {
+  const a = BODY_AT_LOAD.indexOf(KB_START), e = BODY_AT_LOAD.indexOf(KB_END);
+  const e2 = e < 0 ? -1 : BODY_AT_LOAD.indexOf(SCRIPT_CLOSE, e);
+  if (a < 0 || e2 < 0) throw { code: "source_missing" };
+  let content = BODY_AT_LOAD.slice(a, e2 + SCRIPT_CLOSE.length);
+  const open = '<script type="application/json" id="cfg">';
+  const i = content.indexOf(open), j = i < 0 ? -1 : content.indexOf(SCRIPT_CLOSE, i);
+  if (i < 0 || j < 0) throw { code: "source_missing" };
+  const json = JSON.stringify(c).replace(/</g, "\\u003c");
+  content = content.slice(0, i + open.length) + json + content.slice(j);
+  return SKELETON + content + "\n</body></html>";
+}
+
+function validate(c) {
+  const vis = c.menus.filter((m) => !m.hidden);
+  if (!vis.some((m) => !m.needs)) return "表示するメニューが、1つもありません。";
+  if (vis.some((m) => !String(m.name).trim())) return "名前が空のメニューがあります。";
+  return "";
+}
+
+async function publishDraft() {
+  confirming = false;
+  const bad = validate(CFG);
+  if (bad) { updateBar(); barMsg(bad); return; }
+  barMsg("公開しています…");
+  $("bPub").hidden = true; $("bDiscard").hidden = true; $("bYes").hidden = true; $("bNo").hidden = true; $("bEdit").hidden = true;
+  try {
+    const next = clone(CFG);
+    next.rules = next.rules.filter((r) => String(r[0]).trim() || String(r[1]).trim());
+    next.videos = (next.videos || []).map((u) => String(u || "").trim());
+    next.prev = JSON.parse(stable(PUB));
+    const art = window.claude && await window.claude.use("artifact");
+    if (!art) throw { code: "not_granted" };
+    await art.publish(buildDoc(next));
+    barMsg("公開しました。ページを読み込み直します。");
+  } catch (err) {
+    const code = err && err.code;
+    $("bEdit").hidden = false;
+    updateBar();
+    if (code === "conflict") barMsg("別の場所で、先にページが更新されました。読み込み直します。");
+    else if (code === "not_writer" || code === "not_granted" || code === "consent_required" || code === "capability_disabled") barMsg("この画面では公開できません。持ち主のアカウントで開いてください。");
+    else if (code === "too_large") barMsg("内容が大きすぎて、公開できません。");
+    else if (code === "rate_limited") barMsg("続けて公開したので、少し待ってからもう一度お試しください。");
+    else if (code === "source_missing") barMsg("ページの元の内容が読み取れませんでした。Claudeに知らせてください。");
+    else barMsg("公開できませんでした。少し待って、もう一度お試しください。");
+  }
+}
+
+(async () => {
+  try {
+    const u = window.claude ? await window.claude.use("user") : null;
+    canEdit = !!(u && await u.canEdit());
+  } catch (_) { canEdit = false; }
+  updateBar();
+})();
+
+try {
+  new QRCode($("qr"), { text: LINE_URL, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M });
+} catch (_) { $("qr").hidden = true; }
+
+renderMenu();
+renderRules();
+render();
+/*kb-main-end*/
+
+</script>
+</body></html>
