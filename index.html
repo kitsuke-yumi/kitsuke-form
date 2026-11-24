@@ -155,7 +155,7 @@ button.mini:disabled,.ebtns button:disabled{opacity:.4;cursor:not-allowed}
   <header>
     <p class="eyebrow">出張着付け</p>
     <h1>お問い合わせフォーム</h1>
-    <p class="lead">ご希望の内容を入力して、LINEでお送りください。空き状況を確認して、こちらからご返信します。この時点では、ご予約は確定していません。</p>
+    <p class="lead">ご希望の内容を入力して、LINEでお送りください。その場でお見積もり金額がわかります。空き状況を確認して、こちらからご返信します。この時点では、ご予約は確定していません。</p>
   </header>
 
   <section id="friend">
@@ -166,11 +166,9 @@ button.mini:disabled,.ebtns button:disabled{opacity:.4;cursor:not-allowed}
       <a class="btn secondary" href="https://line.me/ti/p/SYeWz7YhCe" target="_blank" rel="noopener">LINEで友だち追加する</a>
     </div>
     <div class="mail" id="mailTop" hidden="">
-      <h3>メールでお問い合わせの方</h3>
-      <p class="lead">LINEを使わない方は、メールでもお問い合わせいただけます。下のフォームに入力すると、最後の「メールで送る」から、内容を入れたメールを作れます。</p>
-      <div class="mailrow"><strong id="mailTopAddr"></strong><button type="button" class="act secondary small" id="copyTop">アドレスをコピー</button></div>
-      <button type="button" class="act secondary" id="toMail">メールで送る場所まで進む</button>
+      <p class="lead">メールでお問い合わせの方は、「必須」の項目をすべて入力してから、一番下の「メールで送る場合」からお送りください。</p>
     </div>
+    <p class="lead" style="font-size:.98rem">お急ぎの方はお電話でお問い合わせください：<a href="tel:09019230188" style="color:var(--muted);white-space:nowrap">090-1923-0188</a></p>
     
   </section>
 
@@ -212,7 +210,8 @@ button.mini:disabled,.ebtns button:disabled{opacity:.4;cursor:not-allowed}
           <select id="park"><option value="">選んでください</option><option>あり</option><option>なし</option><option>わからない</option></select>
         </label>
       </div>
-      <label class="field"><span>マンション名・目印・建物の特徴<span class="req">必須</span></span><input type="text" id="mark" placeholder="例：〇〇マンション 302、白い外壁、1階にコンビニ"></label>
+      <label class="field"><span>マンション名・目印・建物の特徴<span class="req">必須</span></span><input type="text" id="mark" placeholder="例：〇〇マンション、白い外壁、1階にコンビニ"></label>
+      <label class="field"><span>号室（マンション・アパートの方）<span class="req">必須</span></span><input type="text" id="room" placeholder="例：302号室（戸建の方は、空のままで大丈夫です）"></label>
       <h3>表札</h3>
       <p class="lead">表札がある場合は「あり」を選んでください。ご実家などで、お申込みの方のお名前と表札が違う場合だけ、表札の名前を入れてください。</p>
       <div class="row">
@@ -230,6 +229,9 @@ button.mini:disabled,.ebtns button:disabled{opacity:.4;cursor:not-allowed}
         <legend>着る着物の種類<span class="req">必須</span></legend>
         <div class="checks" id="kinds"></div>
       </fieldset>
+      <label class="field"><span>着物は、レンタルですか？自前ですか？<span class="req">必須</span></span>
+        <select id="own"><option value="">選んでください</option><option>自前（お持ちの着物）</option><option>レンタル</option><option>まだ決まっていない</option></select>
+      </label>
       <div class="row">
         <label class="field"><span>雨天時の着付け<span class="req">必須</span></span>
           <select id="rain"><option value="">選んでください</option><option>行う</option><option>行わない</option><option>延期</option></select>
@@ -273,11 +275,11 @@ button.mini:disabled,.ebtns button:disabled{opacity:.4;cursor:not-allowed}
       </div>
       <p class="lead">「LINEで送る」を押すとLINEが開きます。送り先に、こちらのアカウントを選んでください。開かない場合は「内容をコピーする」からLINEに貼り付けてください。</p>
       <div class="mail" id="mailBox" hidden="">
-        <h3>メールで送る場合</h3>
-        <p class="lead">LINEを使わない方は、メールでお送りください。</p>
+        <h3>メールで送る場合（LINEを使わない方）</h3>
+        <p class="lead">「必須」の項目をすべて入力すると、下のボタンが使えます。</p>
+        <a class="btn primary" id="mailLink" href="#">メールアプリで開く</a>
+        <p class="lead">開かない場合は、「内容をコピーする」を押して、下のアドレス宛てのメールに貼り付けて送ってください。件名は「出張着付けのお問い合わせ」です。</p>
         <div class="mailrow"><strong id="mailAddr"></strong><button type="button" class="act secondary small" id="copyAddr">アドレスをコピー</button></div>
-        <a class="btn secondary" id="mailLink" href="#">メールアプリで開く</a>
-        <p class="lead">メールアプリが開かない場合は、上のアドレスと、「内容をコピーする」でコピーした内容を、メールに貼り付けて送ってください。件名は「出張着付けのお問い合わせ」としてください。</p>
       </div>
     </section>
   </form>
@@ -309,8 +311,11 @@ const menuById = (id) => CFG.menus.find((m) => m.id === id);
 /* ── 計算に使う決まり（ここは、Claudeに頼んで直します） ── */
 const LINE_URL = "https://line.me/ti/p/SYeWz7YhCe"; // LINE友だち追加のURL
 const MAIL_TO = "y.yoyaku8@gmail.com"; // お問い合わせ用のメールアドレス。空のあいだは、メールの案内を表示しません
+const CAL_URL = "https://script.google.com/macros/s/AKfycbz_j5B3YluFRgtT91puKQTkNG6teO7uhgVtTmWW4RvJaowmxsgxwlj2qlN6EYZ49Jc/exec"; // Googleカレンダー自動登録の送り先（空のあいだは、何もしません）
+const CAL_KEY = "kyk-7Q4mX9vB2tLd";
 const PREP = 30; // 準備30分
 const WORK = {"houmon": 30, "houmonH": 60, "furisode": 30, "furisodeH": 60, "tome": 30, "tomeH": 60, "sotsu": 60, "s3": 30, "s5": 15, "s7a": 60, "s7b": 60, "hair": 30}; // 施術時間（分）
+const PARTS = {"houmon":[0,30,0],"houmonH":[30,30,0],"furisode":[0,30,0],"furisodeH":[30,30,0],"tome":[0,30,0],"tomeH":[30,30,0],"sotsu":[30,30,0],"s3":[0,0,30],"s5":[0,0,15],"s7a":[30,30,0],"s7b":[30,30,0],"hair":[30,0,0]}; // [ヘア分, 着付け分, ヘアと着付けが一体の分]
 const EXTRA = {"make": 20, "nihon": 20}; // オプション1つにつき加わる時間（分）
 const KINDS = ["小紋", "訪問着", "留袖", "振袖", "被布", "白無垢", "その他"];
 const HOLIDAYS = new Set(["2026-01-01", "2026-01-12", "2026-02-11", "2026-02-23", "2026-03-20", "2026-04-29", "2026-05-03", "2026-05-04", "2026-05-05", "2026-05-06", "2026-07-20", "2026-08-11", "2026-09-21", "2026-09-22", "2026-09-23", "2026-10-12", "2026-11-03", "2026-11-23", "2027-01-01", "2027-01-11", "2027-02-11", "2027-02-23", "2027-03-21", "2027-03-22", "2027-04-29", "2027-05-03", "2027-05-04", "2027-05-05", "2027-07-19", "2027-08-11", "2027-09-20", "2027-09-23", "2027-10-11", "2027-11-03", "2027-11-23"]);
@@ -377,7 +382,8 @@ const hasBase = () => menus().some((m) => !m.needs && (qty[m.id] || 0) > 0) || $
 
 function calc() {
   const k = dayKind($("d1").value) || "wd";
-  const lines = [], opts = [];
+  const lines = [], opts = [], items = [];
+  let H = 0, K = 0, C = 0;
   let sum = 0, work = 0, extra = 0, unk = false, sotsu = false, pend = false;
   menus().forEach((m) => {
     const q = qty[m.id] || 0;
@@ -386,6 +392,8 @@ function calc() {
     if (WORK[m.id]) work += WORK[m.id] * q; else if (EXTRA[m.id]) extra += EXTRA[m.id] * q; else unk = true;
     if (m.id === "sotsu") sotsu = true;
     (m.opt ? opts : lines).push(`${m.name} × ${q}`);
+    items.push({ name: m.name, q, price: m[k] });
+    if (PARTS[m.id]) { H += PARTS[m.id][0] * q; K += PARTS[m.id][1] * q; C += PARTS[m.id][2] * q; }
   });
   const kinds = [...document.querySelectorAll("#kinds input:checked")].map((e) => e.value);
   const inq = $("seijin").checked;
@@ -400,7 +408,7 @@ function calc() {
       earlyFee = CFG.fees.early * Math.max(0, (sotsu ? 7 : 9) - Math.floor(a / 60));
     }
   }
-  return { k, lines, opts, inq, picked, pend, extra, work, unk: unk || inq, arr, earlyFee, trip, sum, total: sum + trip + earlyFee, kinds };
+  return { k, items, H, K, C, lines, opts, inq, picked, pend, extra, work, unk: unk || inq, arr, earlyFee, trip, sum, total: sum + trip + earlyFee, kinds };
 }
 
 function build(c) {
@@ -422,11 +430,33 @@ function build(c) {
   L.push(`場所：${$("place").value}`);
   if ($("park").value) L.push(`駐車場：${$("park").value}`);
   if ($("mark").value.trim()) L.push(`マンション名・目印：${$("mark").value.trim()}`);
+  if ($("room").value.trim()) L.push(`号室：${$("room").value.trim()}`);
   if ($("use").value.trim()) L.push(`用途：${$("use").value.trim()}`);
   if (c.kinds.length) L.push(`着物の種類：${c.kinds.join("、")}`);
+  if ($("own").value) L.push(`着物の準備：${$("own").value}`);
   if ($("rain").value) L.push(`雨天時の着付け：${$("rain").value}`);
   if ($("sns").value) L.push(`SNS掲載：${$("sns").value}`);
-  L.push(`料金の目安：${yen(c.total)}${c.trip ? `（出張費${yen(c.trip)}を含む・交通費は別途）` : ""}${c.pend ? "（一部のメニューは料金を確認してご連絡）" : ""}`);
+  L.push("");
+  L.push("【見積もり】");
+  c.items.forEach((it) => L.push(`${it.name}${it.q > 1 ? " ×" + it.q : ""} ${it.price == null ? "（確認してご連絡）" : it.price * it.q}`));
+  if (c.trip) L.push(`出張費 ${c.trip}`);
+  if (c.earlyFee) L.push(`早朝料金 ${c.earlyFee}`);
+  L.push(`合計 ${c.total}円（交通費は別途）${c.pend ? "※一部のメニューは料金を確認してご連絡" : ""}`);
+  if (c.arr != null) {
+    const dt = $("d1").value ? fmtDate($("d1").value).replace(/^\d+年/, "").replace("月", "/").replace("日", "") : "";
+    let t = c.arr + PREP;
+    L.push("");
+    L.push("【時間割の目安】");
+    if (dt) L.push(dt);
+    L.push(`${fmtMin(c.arr)} お伺い（準備）`);
+    const seg = (label, m) => { if (m > 0) { L.push(`${fmtMin(t)}〜 ${label}`); t += m; } };
+    seg("お子様のメイク・日本髪", c.extra);
+    seg("ヘアセット", c.H);
+    seg("ヘアセット・着付け", c.C);
+    seg("着付け", c.K);
+    L.push(`${fmtMin(t)} 仕上がり`);
+    L.push("※時間は目安です。当日の状況で前後します。");
+  }
   if ($("memo").value.trim()) L.push(`ご要望：${$("memo").value.trim()}`);
   return L.join("\n");
 }
@@ -441,9 +471,11 @@ function missing(c) {
   if (!$("place").value) m.push("場所の種類");
   if (!$("park").value) m.push("駐車場");
   if (!$("mark").value.trim()) m.push("マンション名・目印・建物の特徴");
+  if ($("bld").value === "マンション・アパート" && !$("room").value.trim()) m.push("号室");
   if (!$("plate").value) m.push("表札の有無");
   if (!$("use").value.trim()) m.push("ご利用の用途");
   if (!c.kinds.length) m.push("着る着物の種類");
+  if (!$("own").value) m.push("着物はレンタルか自前か");
   if (!$("rain").value) m.push("雨天時の着付け");
   if (!$("sns").value) m.push("SNSへの写真掲載");
   if (!$("tel").value.trim()) m.push("連絡先（お電話）");
@@ -479,7 +511,6 @@ function render() {
     $("mailBox").hidden = false;
     $("mailAddr").textContent = MAIL_TO;
     $("mailTop").hidden = false;
-    $("mailTopAddr").textContent = MAIL_TO;
     $("mailLink").href = "mailto:" + MAIL_TO + "?subject=" + encodeURIComponent("出張着付けのお問い合わせ") + "&body=" + encodeURIComponent(text);
   }
   const m = missing(c);
@@ -496,16 +527,41 @@ $("f").addEventListener("input", render);
 $("f").addEventListener("change", render);
 $("f").addEventListener("submit", (e) => e.preventDefault());
 
+let calSent = "";
+function sendCal() {
+  if (!CAL_URL) return;
+  try {
+    const c = calc();
+    if (missing(c).length) return;
+    const text = $("out").value;
+    if (text === calSent) return;
+    calSent = text;
+    const names = c.lines.slice();
+    if (c.inq) names.push("成人式当日");
+    const body = JSON.stringify({
+      key: CAL_KEY,
+      date: $("d1").value,
+      finish: $("t1").value || "09:00",
+      arriveMin: c.arr,
+      name: $("name").value.trim(),
+      menu: names.map((t) => t.replace(/ × /g, "×")).join("、"),
+      addr: $("addr").value.trim(),
+      text
+    });
+    fetch(CAL_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body, keepalive: true }).catch(() => {});
+  } catch (_) {}
+}
 $("line").addEventListener("click", (e) => {
   render();
   const m = missing(calc());
-  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; }
+  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; } else sendCal();
 });
 
 $("copy").addEventListener("click", async () => {
   render();
   const m = missing(calc());
   if (m.length) { $("err").textContent = `未入力：${m.join("、")}。入力してからコピーしてください。`; return; }
+  sendCal();
   try {
     await navigator.clipboard.writeText($("out").value);
     $("status").textContent = "コピーしました。LINEに貼り付けて送ってください。";
@@ -518,11 +574,9 @@ $("copy").addEventListener("click", async () => {
 $("mailLink").addEventListener("click", (e) => {
   render();
   const m = missing(calc());
-  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; }
+  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; } else sendCal();
 });
 
-$("toMail").addEventListener("click", () => { $("mailBox").scrollIntoView({ behavior: "smooth", block: "start" }); });
-$("copyTop").addEventListener("click", () => $("copyAddr").click());
 $("copyAddr").addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(MAIL_TO);
