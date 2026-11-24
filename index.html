@@ -166,7 +166,7 @@ button.mini:disabled,.ebtns button:disabled{opacity:.4;cursor:not-allowed}
       <a class="btn secondary" href="https://line.me/ti/p/SYeWz7YhCe" target="_blank" rel="noopener">LINEで友だち追加する</a>
     </div>
     <div class="mail" id="mailTop" hidden="">
-      <p class="lead">メールでお問い合わせの方は、「必須」の項目をすべて入力してから、一番下の「メールで送る場合」からお送りください。</p>
+      <p class="lead">メールでお問い合わせの方は、一番下の「メールで送る場合」から送れます。</p>
     </div>
     <p class="lead" style="font-size:.98rem">お急ぎの方はお電話でお問い合わせください：<a href="tel:09019230188" style="color:var(--muted);white-space:nowrap">090-1923-0188</a></p>
     
@@ -202,16 +202,16 @@ button.mini:disabled,.ebtns button:disabled{opacity:.4;cursor:not-allowed}
           <select id="bld"><option value="">選んでください</option><option>戸建</option><option>マンション・アパート</option><option>その他</option></select>
         </label>
       </div>
+      <label class="field"><span>マンション名・目印・建物の特徴<span class="req">必須</span></span><input type="text" id="mark" placeholder="例：〇〇マンション、白い外壁、1階にコンビニ"></label>
+      <label class="field"><span>号室（マンション・アパートの方）<span class="req">必須</span></span><input type="text" id="room" placeholder="例：302号室（戸建の方は、空のままで大丈夫です）"></label>
       <div class="row">
-        <label class="field"><span>場所の種類<span class="req">必須</span></span>
+        <label class="field"><span>場所の種類（ご自宅・ホテルなど）<span class="req">必須</span></span>
           <select id="place"><option value="">選んでください</option><option>ご自宅</option><option>ご実家</option><option>ホテル</option><option>式場・美容室</option><option>その他</option></select>
         </label>
         <label class="field"><span>駐車場<span class="req">必須</span></span>
           <select id="park"><option value="">選んでください</option><option>あり</option><option>なし</option><option>わからない</option></select>
         </label>
       </div>
-      <label class="field"><span>マンション名・目印・建物の特徴<span class="req">必須</span></span><input type="text" id="mark" placeholder="例：〇〇マンション、白い外壁、1階にコンビニ"></label>
-      <label class="field"><span>号室（マンション・アパートの方）<span class="req">必須</span></span><input type="text" id="room" placeholder="例：302号室（戸建の方は、空のままで大丈夫です）"></label>
       <h3>表札</h3>
       <p class="lead">表札がある場合は「あり」を選んでください。ご実家などで、お申込みの方のお名前と表札が違う場合だけ、表札の名前を入れてください。</p>
       <div class="row">
@@ -276,8 +276,9 @@ button.mini:disabled,.ebtns button:disabled{opacity:.4;cursor:not-allowed}
       <p class="lead">「LINEで送る」を押すとLINEが開きます。送り先に、こちらのアカウントを選んでください。開かない場合は「内容をコピーする」からLINEに貼り付けてください。</p>
       <div class="mail" id="mailBox" hidden="">
         <h3>メールで送る場合（LINEを使わない方）</h3>
-        <p class="lead">「必須」の項目をすべて入力すると、下のボタンが使えます。</p>
-        <a class="btn primary" id="mailLink" href="#">メールアプリで開く</a>
+        <p class="lead"><strong>メールで送る場合は、下のボタンをタップしてください。</strong><br>（「必須」の項目をすべて入力すると、押せるようになります）</p>
+        <a class="btn primary" id="mailLink" href="#">メールで送る方はここをタップ</a>
+        <p class="lead">メールの画面が開いたら、<strong>最後に、メールの「送信」を押してください。</strong></p>
         <p class="lead">開かない場合は、「内容をコピーする」を押して、下のアドレス宛てのメールに貼り付けて送ってください。件名は「出張着付けのお問い合わせ」です。</p>
         <div class="mailrow"><strong id="mailAddr"></strong><button type="button" class="act secondary small" id="copyAddr">アドレスをコピー</button></div>
       </div>
@@ -426,11 +427,11 @@ function build(c) {
   if (c.arr != null) L.push(`お伺い時間の目安：${fmtMin(c.arr)}${c.earlyFee ? `（早朝料金 ${yen(c.earlyFee)}）` : ""}`);
   L.push(`出張先：${$("addr").value.trim() || "（未入力）"}`);
   if ($("bld").value) L.push(`建物：${$("bld").value}`);
-  if ($("plate").value) L.push(`表札：${$("plate").value}${$("plateName").value.trim() ? "（" + $("plateName").value.trim() + "）" : ""}`);
-  L.push(`場所：${$("place").value}`);
-  if ($("park").value) L.push(`駐車場：${$("park").value}`);
   if ($("mark").value.trim()) L.push(`マンション名・目印：${$("mark").value.trim()}`);
   if ($("room").value.trim()) L.push(`号室：${$("room").value.trim()}`);
+  L.push(`場所：${$("place").value}`);
+  if ($("park").value) L.push(`駐車場：${$("park").value}`);
+  if ($("plate").value) L.push(`表札：${$("plate").value}${$("plateName").value.trim() ? "（" + $("plateName").value.trim() + "）" : ""}`);
   if ($("use").value.trim()) L.push(`用途：${$("use").value.trim()}`);
   if (c.kinds.length) L.push(`着物の種類：${c.kinds.join("、")}`);
   if ($("own").value) L.push(`着物の準備：${$("own").value}`);
@@ -554,7 +555,7 @@ function sendCal() {
 $("line").addEventListener("click", (e) => {
   render();
   const m = missing(calc());
-  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; } else sendCal();
+  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; $("status").textContent = `未入力の項目があります。上の「必須」の項目を入力してください。`; } else sendCal();
 });
 
 $("copy").addEventListener("click", async () => {
@@ -574,7 +575,7 @@ $("copy").addEventListener("click", async () => {
 $("mailLink").addEventListener("click", (e) => {
   render();
   const m = missing(calc());
-  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; } else sendCal();
+  if (m.length) { e.preventDefault(); $("err").textContent = `未入力：${m.join("、")}。入力してからお送りください。`; $("status").textContent = `未入力の項目があります。上の「必須」の項目を入力してください。`; } else sendCal();
 });
 
 $("copyAddr").addEventListener("click", async () => {
